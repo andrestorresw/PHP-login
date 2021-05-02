@@ -1,3 +1,41 @@
+<?php
+include "conexion.php";
+
+//Registrar usuario
+if(isset($_POST["registar"])){
+	$nombre = mysqli_real_escape_string($conn, $_POST["nombre"]);
+	$correo = mysqli_real_escape_string($conn, $_POST["correo"]);
+	$user = mysqli_real_escape_string($conn, $_POST["user"]);
+	$pass = mysqli_real_escape_string($conn, $_POST["pass"]);
+	$pass_encrypt = sha1($pass);
+	$sqluser = "SELECT id FROM users WHERE username = '$user' ";
+
+	$resultadoUser = $conn->query($sqluser);
+	$filas = $resultadoUser->num_rows;
+	if($filas > 0 ){
+		echo "<script>
+				alert('El usuario ya existe');
+				window.location = 'index.php';
+			</script>";
+	}else{
+		//insertar informacionn del usuario
+		$sqlusuario = "INSERT INTO users('name', 'email', 'username', 'password') VALUE ('$nombre', '$correo', '$user', '$pass_encrypt')";
+		$resultadoUsuario = $conn->query($sqlusuario);
+		if($resultadoUsuario > 0){
+			echo "<script>
+					alert('Registro Exitoso');
+					window.location = 'index.php';
+				</script>";
+		}else{
+			echo "<script>
+					alert('Error al resitrarse');
+					window.location = 'index.php';
+				</script>";
+		}
+	}
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -63,7 +101,7 @@
 
 											<div class="space-6"></div>
 
-											<form action="<?php $_SERVER["PHP_SELF"]; ?>" method="POST" >
+											<form action="<?php $_SERVER["PHP_SELF"]; ?>" method="POST">
 												<fieldset>
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
@@ -151,7 +189,7 @@
 
 											<div class="space-6"></div>
 											<p>
-												Ungresa tu correo electronico para recibir las instrucciones
+												Ingresa tu correo electronico para recibir las instrucciones
 											</p>
 
 						<form>
